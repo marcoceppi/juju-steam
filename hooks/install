@@ -36,3 +36,7 @@ chown -R steam.steam /home/steam
 
 a2dissite default
 install_steam
+
+open-port 80
+open-port 27015
+opne-port 27016
