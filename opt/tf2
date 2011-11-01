@@ -1,0 +1,136 @@
+#!/bin/bash
+# /etc/init.d/tf2
+# version 0.3.2 2011-01-27 (YYYY-MM-DD)
+
+### BEGIN INIT INFO
+# Provides:   tf2
+# Required-Start: $local_fs $remote_fs
+# Required-Stop:  $local_fs $remote_fs
+# Should-Start:   $network
+# Should-Stop:    $network
+# Default-Start:  2 3 4 5
+# Default-Stop:   0 1 6
+# Short-Description:    Valve TF2 server
+# Description:    Starts the TF2 server
+### END INIT INFO
+
+#Settings
+SERVICE='minecraft_server.jar'
+USERNAME="steam"
+TF2PATH='/home/steam/sever/orangebox'
+CPU_COUNT=1
+INVOCATION="$TF2PATH/srcds_run -game tf -autoupdate -tickrate 66 +map cp_badlands -steambin /home/tf2/hlds/steam"
+
+ME=`whoami`
+
+as_user()
+{
+	if [ $ME == $USERNAME ]; then
+		bash -c "$1"
+	else
+		su - $USERNAME -c "$1"
+	fi
+}
+
+tf2_start()
+{
+	if ps ax | grep -v grep | grep -v -i SCREEN | grep $SERVICE > /dev/null
+	then
+		echo "Tried to start but $SERVICE was already running!"
+	else
+		echo "$SERVICE was not running... starting."
+		cd $TF2PATH
+		as_user "cd $TF2PATH && screen -dmS tf2 $INVOCATION"
+		sleep 7
+		if ps ax | grep -v grep | grep -v -i SCREEN | grep $SERVICE > /dev/null
+		then
+			echo "$SERVICE is now running."
+		else
+			echo "Could not start $SERVICE."
+		fi
+	fi
+}
+
+tf2_stop()
+{
+	if ps ax | grep -v grep | grep -v -i SCREEN | grep $SERVICE > /dev/null
+	then
+		echo "$SERVICE is running... stopping."
+		as_user "screen -p 0 -S tf2 -X eval 'stuff \"say SERVER SHUTTING DOWN IN 10 SECONDS.\"\015'"
+		sleep 10
+		as_user "screen -p 0 -S tf2 -X eval 'stuff \"stop\"\015'"
+		sleep 7
+        else
+                echo "$SERVICE was not running."
+        fi
+        if ps ax | grep -v grep | grep -v -i SCREEN | grep $SERVICE > /dev/null
+        then
+                echo "$SERVICE could not be shut down... still running."
+        else
+                echo "$SERVICE is shut down."
+        fi
+}
+
+tf2_update()
+{
+  if ps ax | grep -v grep | grep -v -i SCREEN | grep $SERVICE > /dev/null
+  then
+    echo "$SERVICE is running! Will not start update."
+  else
+    as_user "cd $MCPATH && wget -q -O $MCPATH/minecraft_server.jar.update $MC_SERVER_URL"
+    if [ -f $MCPATH/minecraft_server.jar.update ]
+    then
+      if `diff $MCPATH/minecraft_server.jar $MCPATH/minecraft_server.jar.update >/dev/null`
+        then
+          echo "You are already running the latest version of $SERVICE."
+        else
+          as_user "mv $MCPATH/minecraft_server.jar.update $MCPATH/minecraft_server.jar"
+          echo "Minecraft successfully updated."
+      fi
+    else
+      echo "Minecraft update could not be downloaded."
+    fi
+  fi
+}
+
+tf2_backup()
+{
+   echo "Backing up minecraft world"
+   FILEPOST=`date "+%Y.%m.%d"`
+   as_user "cd $MCPATH && cp minecraft_server.jar \"$BACKUPPATH/minecraft_server_`date "+%Y.%m.%d"`.jar\""
+   echo "Backup complete"
+}
+
+#Start-Stop here
+case "$1" in
+  start)
+    tf2_start
+  ;;
+  stop)
+    tf2_stop
+  ;;
+  restart)
+    tf2_stop
+    tf2_start
+  ;;
+  update)
+    tf2_stop
+    tf2_update
+    tf2_start
+  ;;
+  status)
+    if ps ax | grep -v grep | grep -v -i SCREEN | grep $SERVICE > /dev/null
+    then
+      echo "$SERVICE is running."
+    else
+      echo "$SERVICE is not running."
+    fi
+  ;;
+
+  *)
+    echo "Usage: /etc/init.d/tf2 {start|stop|status|restart|update}"
+    exit 1
+  ;;
+esac
+
+exit 0

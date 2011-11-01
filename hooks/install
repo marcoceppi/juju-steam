@@ -1,0 +1,38 @@
+#!/bin/bash
+# i.e. apt-get install -y foo  or  bzr branch http://myserver/mycode /srv/webroot
+
+apt-get install -y apache2
+
+egrep  -i "^steam" /etc/passwd
+if [ $? -ne 0 ]; then
+	adduser --disabled-password --disabled-login --gecos "Valve,Steam Server,,,," steam
+fi
+
+install_steam() {
+	cd /home/steam && mkdir hlds && cd $_
+
+	wget "http://storefront.steampowered.com/download/hldsupdatetool.bin"
+	chmod +x hldsupdatetool.bin
+	yes "yes" | ./hldsupdatetool.bin
+
+	STEAM_EXIT=9000
+
+	#while [ "$STEAM_EXIT" -ne 0 ]; do
+	#	./steam
+	#	STEAM_EXIT=$?
+	#done
+
+	mkdir server
+
+	#./steam -command update -game tf -dir server/
+
+	mkdir -p /home/steam/www/replays
+}
+
+cp opt/tf2-replays /etc/apache2/conf.d/
+cp opt/tf2 /etc/init.d/ && chmod 0755 $_
+
+chown -R steam.steam /home/steam
+
+a2dissite default
+install_steam

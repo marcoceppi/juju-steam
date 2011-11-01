@@ -1,0 +1,8 @@
+name: tf2
+summary: "Installs Steam and the Valve Team Fortress 2 Server"
+description: |
+  Installs the Steam Client Binary and then the Valve Team Fortress 2 Server
+  
+  Upon installation, the Steam client will be updated and Team Fortress 2 will
+  be installed. Something more here? What more would be needed? It's a game server.
+
