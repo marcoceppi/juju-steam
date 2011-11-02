@@ -1,0 +1,73 @@
+options:
+  gamename:
+    default: Juju started sever
+    type: string
+    description: Server's game name
+  visible_maxplayers:
+    default: 24
+    type: integer
+    description: How many players the server advertises
+  maxplayers:
+    default: 24
+    type: integer
+    description: Maximium players available on the server
+  maxrounds:
+    default: 5
+    type: integer
+    description: Maximum rounds per map
+  pure:
+    default: 2
+    type: integer
+    description: Control access to content
+  is_lan:
+    default: 0
+    type: boolean
+    description: Is a lan or internet game
+  server_email:
+    default: steam@localhost
+    type: string
+    description: Admin contact for the server
+  region:
+    default: -1
+    type: integer
+    description: Region of the sever: -1 is the world, 0 is USA east coast, 1 is USA west coast, 2 south america, 3 europe, 4 asia, 5 australia, 6 middle east, 7 africa
+  rcon_password:
+    default: sw0rdf!sh
+    type: string
+    description: Password for Remote Console
+  log_to_console:
+    default: 0
+    type: boolean
+    description: Echo log ot console
+  max_fps:
+    default: 300
+    type: integer
+    description: Maximum Frames Per Second
+  allow_upload:
+    default: 0
+    type: boolean
+    description: Allow upload to server
+  allow_download:
+    default: 1
+    type: boolean
+    description: Allow downloads from server
+  auto_team_balance:
+    default: 1
+    type: boolean
+    description: Automatically balance the teams
+  map_timelimit:
+    default:30
+    type: integer
+    description: Timelimit in minutes
+  idle_play_action:
+    default: 1
+    type: integer
+    description: 1 is to spectate, 2 is to kick
+  enable_voice:
+    default: 1
+    type: boolean
+    description: Allow voice communication
+  alltalk:
+    default: 1
+    type: boolean
+    description: Allow chat between both teams
