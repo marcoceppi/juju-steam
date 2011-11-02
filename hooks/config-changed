@@ -8,6 +8,6 @@ mv /home/steam/server/orangebox/tf/cfg/server.cfg /home/steam/sever/orangebox/tf
 
 for CONFIG_NAME in `grep -ri "STEAM_" opt/server.cfg | awk '{ print $2}'`; do
 	JUJU_CFG_NAME=`echo "$CONFIG_NAME" | sed 's/STEAM_//'`
-	JUJU_CFG_VALUE=`get-config ${JUJU_CFG_NAME,,*}`
+	JUJU_CFG_VALUE=`config-get ${JUJU_CFG_NAME,,*}`
 	sed "s/${CONFIG_NAME}/${JUJU_CFG_VALUE}/" opt/server.cfg /home/steam/server/orangebox/tf/cfg/server.cfg
 done
