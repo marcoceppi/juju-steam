@@ -1,13 +1,31 @@
 #!/bin/bash
 
-# Temporary
-mkdir -p /home/steam/server/orangebox/tf/cfg
+rm -f /home/steam/hlds/server/orangebox/tf/cfg/sever.cfg.bak
+mv /home/steam/hlds/server/orangebox/tf/cfg/server.cfg /home/steam/hlds/sever/orangebox/tf/cfg/server.cfg.bak
 
-rm -f /home/steam/server/orangebox/tf/cfg/sever.cfg.bak
-mv /home/steam/server/orangebox/tf/cfg/server.cfg /home/steam/sever/orangebox/tf/cfg/server.cfg.bak
-
-for CONFIG_NAME in `grep -ri "STEAM_" opt/server.cfg | awk '{ print $2}'`; do
-	JUJU_CFG_NAME=`echo "$CONFIG_NAME" | sed 's/STEAM_//'`
-	JUJU_CFG_VALUE=`config-get ${JUJU_CFG_NAME,,*}`
-	sed "s/${CONFIG_NAME}/${JUJU_CFG_VALUE}/" opt/server.cfg /home/steam/server/orangebox/tf/cfg/server.cfg
+STEAM_EXIT=9000
+CHARM_DIR=`pwd`
+while [ "$STEAM_EXIT" -ne 0 ]; do
+	./steam
+	STEAM_EXIT=$?
 done
+
+install_game() {
+	cd /home/steam/hlds/
+	mkdir server
+	./steam -command update -game tf -dir server/
+}
+
+update_configuration() {
+	cd "$CHARM_DIR"
+	
+	for CONFIG_NAME in `grep -ri "STEAM_" opt/server.cfg | awk '{ print $2}'`; do
+		JUJU_CFG_NAME=`echo "$CONFIG_NAME" | sed 's/STEAM_//'`
+		JUJU_CFG_VALUE=`config-get ${JUJU_CFG_NAME,,*}`
+		sed -i "s/${CONFIG_NAME}/${JUJU_CFG_VALUE}/" /home/steam/hlds/server/orangebox/tf/cfg/server.cfg
+	done
+}
+
+if [ ! -f "/home/steam/hlds/server/orangebox/srcds_linux" ]; then
+	install_game()
+fi

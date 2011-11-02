@@ -15,17 +15,6 @@ install_steam() {
 	chmod +x hldsupdatetool.bin
 	yes "yes" | ./hldsupdatetool.bin
 
-	STEAM_EXIT=9000
-
-	#while [ "$STEAM_EXIT" -ne 0 ]; do
-	#	./steam
-	#	STEAM_EXIT=$?
-	#done
-
-	mkdir server
-
-	#./steam -command update -game tf -dir server/
-
 	mkdir -p /home/steam/www/replays
 }
 
@@ -35,6 +24,10 @@ cp opt/tf2 /etc/init.d/ && chmod 0755 $_
 chown -R steam.steam /home/steam
 
 a2dissite default
+
+mkdir -p /home/steam/hlds/server/orangebox/tf/cfg
+cp opt/server.cfg /home/steam/hlds/server/orangebox/tf/cfg/
+
 install_steam
 
 open-port 80
