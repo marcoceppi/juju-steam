@@ -6,6 +6,7 @@ mv /home/steam/hlds/server/orangebox/tf/cfg/server.cfg /home/steam/hlds/sever/or
 STEAM_EXIT=9000
 CHARM_DIR=`pwd`
 while [ "$STEAM_EXIT" -ne 0 ]; do
+	cd /home/steam/hlds/
 	./steam
 	STEAM_EXIT=$?
 done
@@ -27,5 +28,5 @@ update_configuration() {
 }
 
 if [ ! -f "/home/steam/hlds/server/orangebox/srcds_linux" ]; then
-	install_game()
+	install_game
 fi
