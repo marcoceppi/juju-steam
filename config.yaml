@@ -1,4 +1,8 @@
 options:
+  game:
+    default: tf
+    type: string
+    description: Steam game server to install
   gamename:
     default: Juju started sever
     type: string

@@ -1,25 +1,25 @@
 #!/bin/bash
-# /etc/init.d/tf2
+# /etc/init.d/steam
 # version 0.3.2 2011-01-27 (YYYY-MM-DD)
 
 ### BEGIN INIT INFO
-# Provides:   tf2
+# Provides:   steam
 # Required-Start: $local_fs $remote_fs
 # Required-Stop:  $local_fs $remote_fs
 # Should-Start:   $network
 # Should-Stop:    $network
 # Default-Start:  2 3 4 5
 # Default-Stop:   0 1 6
-# Short-Description:    Valve TF2 server
-# Description:    Starts the TF2 server
+# Short-Description:    Valve STEAM server
+# Description:    Starts the STEAM server
 ### END INIT INFO
 
 #Settings
-SERVICE='minecraft_server.jar'
+SERVICE='srcsd'
 USERNAME="steam"
-TF2PATH='/home/steam/sever/orangebox'
+STEAMPATH='/home/steam/hlds/server/orangebox'
 CPU_COUNT=1
-INVOCATION="$TF2PATH/srcds_run -game tf -autoupdate -tickrate 66 +map cp_badlands -steambin /home/tf2/hlds/steam"
+INVOCATION="$STEAMPATH/srcds_run -game tf -autoupdate -tickrate 66 +map cp_badlands -steambin /home/steam/hlds/steam"
 
 ME=`whoami`
 
@@ -32,15 +32,15 @@ as_user()
 	fi
 }
 
-tf2_start()
+steam_start()
 {
 	if ps ax | grep -v grep | grep -v -i SCREEN | grep $SERVICE > /dev/null
 	then
 		echo "Tried to start but $SERVICE was already running!"
 	else
 		echo "$SERVICE was not running... starting."
-		cd $TF2PATH
-		as_user "cd $TF2PATH && screen -dmS tf2 $INVOCATION"
+		cd $STEAMPATH
+		as_user "cd $STEAMPATH && screen -dmS steam $INVOCATION"
 		sleep 7
 		if ps ax | grep -v grep | grep -v -i SCREEN | grep $SERVICE > /dev/null
 		then
@@ -51,14 +51,14 @@ tf2_start()
 	fi
 }
 
-tf2_stop()
+steam_stop()
 {
 	if ps ax | grep -v grep | grep -v -i SCREEN | grep $SERVICE > /dev/null
 	then
 		echo "$SERVICE is running... stopping."
-		as_user "screen -p 0 -S tf2 -X eval 'stuff \"say SERVER SHUTTING DOWN IN 10 SECONDS.\"\015'"
+		as_user "screen -p 0 -S steam -X eval 'stuff \"say SERVER SHUTTING DOWN IN 10 SECONDS.\"\015'"
 		sleep 10
-		as_user "screen -p 0 -S tf2 -X eval 'stuff \"stop\"\015'"
+		as_user "screen -p 0 -S steam -X eval 'stuff \"stop\"\015'"
 		sleep 7
         else
                 echo "$SERVICE was not running."
@@ -71,7 +71,7 @@ tf2_stop()
         fi
 }
 
-tf2_update()
+steam_update()
 {
   if ps ax | grep -v grep | grep -v -i SCREEN | grep $SERVICE > /dev/null
   then
@@ -93,7 +93,7 @@ tf2_update()
   fi
 }
 
-tf2_backup()
+steam_backup()
 {
    echo "Backing up minecraft world"
    FILEPOST=`date "+%Y.%m.%d"`
@@ -104,19 +104,19 @@ tf2_backup()
 #Start-Stop here
 case "$1" in
   start)
-    tf2_start
+    steam_start
   ;;
   stop)
-    tf2_stop
+    steam_stop
   ;;
   restart)
-    tf2_stop
-    tf2_start
+    steam_stop
+    steam_start
   ;;
   update)
-    tf2_stop
-    tf2_update
-    tf2_start
+    steam_stop
+    steam_update
+    steam_start
   ;;
   status)
     if ps ax | grep -v grep | grep -v -i SCREEN | grep $SERVICE > /dev/null
@@ -128,7 +128,7 @@ case "$1" in
   ;;
 
   *)
-    echo "Usage: /etc/init.d/tf2 {start|stop|status|restart|update}"
+    echo "Usage: /etc/init.d/steam {start|stop|status|restart|update}"
     exit 1
   ;;
 esac

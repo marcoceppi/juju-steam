@@ -1,6 +1,10 @@
 #!/bin/bash
 # i.e. apt-get install -y foo  or  bzr branch http://myserver/mycode /srv/webroot
 
+set -ux
+
+GAME=`config-get game`
+
 apt-get install -y apache2
 
 egrep  -i "^steam" /etc/passwd
@@ -18,15 +22,15 @@ install_steam() {
 	mkdir -p /home/steam/www/replays
 }
 
-cp opt/tf2-replays /etc/apache2/conf.d/
-cp opt/tf2 /etc/init.d/ && chmod 0755 $_
+cp opt/$GAME-apache /etc/apache2/conf.d/
+cp opt/steam /etc/init.d/ && chmod 0755 $_
 
 chown -R steam.steam /home/steam
 
 a2dissite default
 
-mkdir -p /home/steam/hlds/server/orangebox/tf/cfg
-cp opt/server.cfg /home/steam/hlds/server/orangebox/tf/cfg/
+mkdir -p /home/steam/hlds/server/orangebox/$GAME/cfg
+cp opt/$GAME.cfg /home/steam/hlds/server/orangebox/$GAME/cfg/server.cfg
 
 install_steam
 
