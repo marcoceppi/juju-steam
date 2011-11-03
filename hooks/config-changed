@@ -3,24 +3,31 @@
 set -ux
 
 GAME=`config-get game`
-rm -f /home/steam/hlds/server/orangebox/$GAME/cfg/sever.cfg.bak
-mv /home/steam/hlds/server/orangebox/$GAME/cfg/server.cfg /home/steam/hlds/sever/orangebox/$GAME/cfg/server.cfg.bak
+source "env/$GAME"
+
+LOCAL_CFG_FILE="/home/$INSTALL_USER/hlds/server/$GAME_CFG_DIR/server.cfg"
+
+if [ -e "$LOCAL_CFG_FILE" ]; then
+	juju-log "Backing up configuration file."
+	rm -f $INSTALL_USER_HOME/hlds/server/$GAME_CFG_DIR/sever.cfg.bak
+	mv $INSTALL_USER_HOME/hlds/server/$GAME_CFG_DIR/server.cfg $INSTALL_USER_HOME/hlds/sever/$GAME_CFG_DIR/server.cfg.bak
+fi
 
 STEAM_EXIT=9000
 CHARM_DIR=`pwd`
 while [ "$STEAM_EXIT" -ne 0 ]; do
-	cd /home/steam/hlds/
+	cd $INSTALL_USER_HOME/hlds/
 	./steam
 	STEAM_EXIT=$?
 done
 
 install_game() {
-	cd /home/steam/hlds/
-	mkdir -p /home/steam/hlds/server
+	cd $INSTALL_USER_HOME/hlds/
+	mkdir -p $INSTALL_USER_HOME/hlds/server
 	
 	GAME_EXIT=9000
 	while [ "$GAME_EXIT" -ne 0 ]; do
-		./steam -command update -game $GAME -dir server/
+		./steam -command update -game $GAME -dir server
 		GAME_EXIT=$?
 	done
 }
@@ -31,10 +38,14 @@ update_configuration() {
 	for CONFIG_NAME in `grep -ri "STEAM_" opt/server.cfg | awk '{ print $2}'`; do
 		JUJU_CFG_NAME=`echo "$CONFIG_NAME" | sed 's/STEAM_//'`
 		JUJU_CFG_VALUE=`config-get ${JUJU_CFG_NAME,,*}`
-		sed -i "s/${CONFIG_NAME}/${JUJU_CFG_VALUE}/" /home/steam/hlds/server/orangebox/$GAME/cfg/server.cfg
+		sed -i "s/${CONFIG_NAME}/${JUJU_CFG_VALUE}/" $INSTALL_USER_HOME/hlds/server/$GAME_CFG_DIR/server.cfg
 	done
 }
 
-if [ ! -f "/home/steam/hlds/server/orangebox/srcds_linux" ]; then
+if [ ! -f "$INSTALL_USER_HOME/hlds/server/$GAME_BINARY" ]; then
 	install_game
 fi
+
+update_configuration
+
+chown -R steam.steam "$INSTALL_USER_HOME"

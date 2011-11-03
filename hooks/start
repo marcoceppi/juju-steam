@@ -4,4 +4,5 @@
 # i.e. 'service apache2 start'
 
 service apache2 restart
-service steam start
+
+$INSTALL_USER_HOME/hlds/server/$GAME_BINARY -game $GAME_NAME -autoupdate -tickrate 66 +map cp_badlands -steambin /home/steam/hlds/steam &

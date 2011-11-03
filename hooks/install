@@ -5,33 +5,38 @@ set -ux
 
 GAME=`config-get game`
 
+juju-log "Installing the Steam Game Server $GAME"
 apt-get install -y apache2
 
-egrep  -i "^steam" /etc/passwd
+EGREP_PARAMS="^${INSTALL_USER}"
+egrep  -i "$EGREP_PARAMS" /etc/passwd
 if [ $? -ne 0 ]; then
-	adduser --disabled-password --disabled-login --gecos "Valve,Steam Server,,,," steam
+	juju-log "Creating the Steam User"
+	adduser --disabled-password --disabled-login --gecos "Valve,Steam Server,,,," "$INSTALL_USER"
 fi
 
 install_steam() {
-	mkdir -p /home/steam/hlds && cd $_
-
+	mkdir -p $INSTALL_USER_HOME/hlds && cd $_
+	
+	juju-log "Grabbing the hlds tool"
 	wget "http://storefront.steampowered.com/download/hldsupdatetool.bin"
 	chmod +x hldsupdatetool.bin
 	yes "yes" | ./hldsupdatetool.bin
-
-	mkdir -p /home/steam/www/replays
+	
+	mkdir -p $INSTALL_USER_HOME/www/replays
 }
 
-cp opt/$GAME-apache /etc/apache2/conf.d/
-cp opt/steam /etc/init.d/ && chmod 0755 $_
+cp $CHARM_DIR/opt/$GAME-apache /etc/apache2/conf.d/
+cp $CHARM_DIR/opt/steam /etc/init.d/ && chmod 0755 /etc/init.d/steam
 
-chown -R steam.steam /home/steam
+chown -R steam.steam $INSTALL_USER_HOME
 
 a2dissite default
 
-mkdir -p /home/steam/hlds/server/orangebox/$GAME/cfg
-cp opt/$GAME.cfg /home/steam/hlds/server/orangebox/$GAME/cfg/server.cfg
+mkdir -p $INSTALL_USER_HOME/hlds/server/$INSTALL_USER_HOME
+cp opt/$GAME.cfg $INSTALL_USER_HOME/hlds/server/$INSTALL_USER_HOME/server.cfg
 
+juju-log "Installing the Steam Client"
 install_steam
 
 open-port 80

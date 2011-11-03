@@ -3,6 +3,10 @@ options:
     default: tf
     type: string
     description: Steam game server to install
+  system_user:
+    default: steam
+    type: string
+    description: The system user which steam runs under
   gamename:
     default: Juju started sever
     type: string
