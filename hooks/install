@@ -9,7 +9,7 @@ if [ $? -ne 0 ]; then
 fi
 
 install_steam() {
-	cd /home/steam && mkdir hlds && cd $_
+	mkdir -p /home/steam/hlds && cd $_
 
 	wget "http://storefront.steampowered.com/download/hldsupdatetool.bin"
 	chmod +x hldsupdatetool.bin
