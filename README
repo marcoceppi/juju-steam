@@ -1,0 +1,18 @@
+Steam is a charmed designed to deploy all Steam supported game severs both native and 3rd party.
+
+At this time the following games are supported, when configuring the service please use the item in the KEY col
+
++---------------------------------------------------------------+
+| Valve game servers                                            |
++----------------+----------------------------------------------+
+| KEY            | GAME                                         |
++----------------+----------------------------------------------+
+| tf2            | Team Fortress 2                              |
+| css            | Counter Strike: Source                       |
+| dods           | Day of Defeat: Source                        |
++----------------+----------------------------------------------+
+| Third party game severs                                       |
++----------------+----------------------------------------------+
+| KEY            | GAME                                         |
++----------------+----------------------------------------------+
++----------------+----------------------------------------------+
