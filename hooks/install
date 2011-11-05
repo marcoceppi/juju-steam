@@ -3,7 +3,7 @@
 
 set -ux
 
-GAME=`config-get game`
+source "env/common"
 
 juju-log "Installing the Steam Game Server $GAME"
 apt-get install -y apache2
