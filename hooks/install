@@ -38,7 +38,3 @@ cp opt/$GAME.cfg $INSTALL_USER_HOME/hlds/server/$INSTALL_USER_HOME/server.cfg
 
 juju-log "Installing the Steam Client"
 install_steam
-
-open-port 80
-open-port 27015
-open-port 27016
