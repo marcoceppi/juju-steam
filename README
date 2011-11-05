@@ -18,3 +18,25 @@ please use the item in the KEY col
 | KEY            | GAME                                         |
 +----------------+----------------------------------------------+
 +----------------+----------------------------------------------+
+
+
+STRUCTURE
+================
+
+This charm operates a bit out of the norm compared to other charms in that it
+spans a great many topics. Aside from the standard directories there are three
+additional directories. A high level overview of their contents and functions
+are outlined below. For more indepth information please refer to the header in
+each file.
+
++ opt/
+  This holds all the misc files for each game, typically the sever file and any
+  related system files for Apache, etc are stored here. When needed they will be
+  copied to their respective locations and updated to reflect the appropriate
+  configuration options
+
++ env/
+  Each game has it's own ENV file which sets up game specific variables needed
+  during install and runtime of the game. These are "hardcoded" values based
+  on best practices for deploying each game to allow for multiple
+  deployments without duplication of effort
