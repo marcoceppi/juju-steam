@@ -2,8 +2,7 @@
 
 set -ux
 
-GAME=`config-get game`
-source "env/$GAME"
+source "env/common"
 
 LOCAL_CFG_FILE="/home/$INSTALL_USER/hlds/server/$GAME_CFG_DIR/server.cfg"
 

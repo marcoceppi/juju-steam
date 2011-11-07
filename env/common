@@ -3,6 +3,7 @@
 CHARM_DIR=`pwd`
 INSTALL_USER=`config-get system_user`
 INSTALL_USER_HOME="/home/$INSTALL_USER"
+GAME=`config-get game`
 
 if [ -e "env/$GAME" ]; then
 	source "env/$GAME"
