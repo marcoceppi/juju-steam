@@ -1,0 +1,10 @@
+#!/bin/bash
+
+GAME_NAME="dods"
+GAME_DIR="orangebox/dods"
+GAME_CFG_DIR="$GAME_DIR/cfg"
+GAME_BINARY="orangebox/srcds_linux"
+
+open-port 80
+open-port 27015
+open-port 27016
