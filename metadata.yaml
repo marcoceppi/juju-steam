@@ -1,8 +1,7 @@
 name: steam
 summary: "Installs the Valve Steam client and a Steam Game Server"
 description: |
-  Installs the Steam Client Binary and any Steam game.
+  Installs the Steam Client Binary and any selected Steam game.
   
-  Upon installation, the Steam client will be updated and Team Fortress 2 will
-  be installed. Something more here? What more would be needed? It's a game server.
-
+  Upon installation, the Steam client will be updated and the selected
+  game will be installed then started.

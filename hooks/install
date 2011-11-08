@@ -4,6 +4,9 @@
 set -ux
 
 source "env/common"
+# HLDS NEVER gets up dated. In fact it updates itself. This is the sha1 
+#  of a verified working hldsupdatetool.bin
+HLDS_SUM="3b8e0fcdd7375511f88556c3f8b698a28c93110f"
 
 juju-log "Installing the Steam Game Server $GAME"
 apt-get install -y apache2
@@ -20,6 +23,13 @@ install_steam() {
 	
 	juju-log "Grabbing the hlds tool"
 	wget "http://storefront.steampowered.com/download/hldsupdatetool.bin"
+	
+	CHECK_HLDS_SUM=`sha1sum hldsupdatetool.bin | awk '{ print $1 }'`
+	
+	if [ "$CHECK_HLDS_SUM" -ne "$HLDS_SUM" ]; then
+		exit 5
+	fi
+	
 	chmod +x hldsupdatetool.bin
 	yes "yes" | ./hldsupdatetool.bin
 	

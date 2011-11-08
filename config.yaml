@@ -8,7 +8,7 @@ options:
     type: string
     description: The system user which steam runs under
   gamename:
-    default: Juju started sever
+    default: Juju powered Server
     type: string
     description: Servers game name
   visible_maxplayers:
@@ -38,7 +38,7 @@ options:
   region:
     default: -1
     type: string
-    description: "Region of the sever: -1 is the world, 0 is USA east coast, 1 is USA west coast, 2 south america, 3 europe, 4 asia, 5 australia, 6 middle east, 7 africa"
+    description: "Region of the server: -1 is the world, 0 is USA east coast, 1 is USA west coast, 2 south america, 3 europe, 4 asia, 5 australia, 6 middle east, 7 africa"
   rcon_password:
     default: sw0rdf!sh
     type: string
