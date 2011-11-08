@@ -1,6 +1,6 @@
 #!/bin/bash
 
-GAME_NAME="Counter Strike Source"
+GAME_NAME="Counter-Strike Source"
 GAME_DIR="css/cstrike"
 GAME_CFG_DIR="$GAME_DIR/cfg"
 GAME_BINARY="css/srcds_linux"
