@@ -24,20 +24,27 @@ install_steam() {
 	juju-log "Grabbing the hlds tool"
 	wget "http://storefront.steampowered.com/download/hldsupdatetool.bin"
 	
+	if [ "$?" -ne 0 ]; then
+		juju-log "Unable to download the HLDS Update Tool"
+		exit 2
+	fi
+	
 	CHECK_HLDS_SUM=`sha1sum hldsupdatetool.bin | awk '{ print $1 }'`
 	
 	if [ "$CHECK_HLDS_SUM" -ne "$HLDS_SUM" ]; then
+		rm -f *.bin
+		juju-log "HLDS Update Tool didn't pass the SHA1SUM check!"
 		exit 5
 	fi
 	
+	juju-log "Running HLDS Update Tool to get access to steam!"
 	chmod +x hldsupdatetool.bin
 	yes "yes" | ./hldsupdatetool.bin
 	
 	mkdir -p $INSTALL_USER_HOME/www/replays
 }
 
-cp $CHARM_DIR/opt/$GAME-apache /etc/apache2/conf.d/
-cp $CHARM_DIR/opt/steam /etc/init.d/ && chmod 0755 /etc/init.d/steam
+cp -f $CHARM_DIR/opt/$GAME-apache /etc/apache2/conf.d/
 
 chown -R steam.steam $INSTALL_USER_HOME
 

@@ -35,7 +35,7 @@ update_configuration() {
 	cd "$CHARM_DIR"
 	
 	for CONFIG_NAME in `grep -ri "STEAM_" opt/server.cfg | awk '{ print $2}'`; do
-		JUJU_CFG_NAME=`echo "$CONFIG_NAME" | sed 's/STEAM_//'`
+		JUJU_CFG_NAME=${CONFIG_NAME#STEAM_}
 		JUJU_CFG_VALUE=`config-get ${JUJU_CFG_NAME,,*}`
 		sed -i "s/${CONFIG_NAME}/${JUJU_CFG_VALUE}/" $INSTALL_USER_HOME/hlds/server/$GAME_CFG_DIR/server.cfg
 	done
