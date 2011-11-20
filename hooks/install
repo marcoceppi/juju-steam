@@ -19,35 +19,7 @@ if [ $? -ne 0 ]; then
 	adduser --disabled-password --disabled-login --gecos "Valve,Steam Server,,,," "$INSTALL_USER"
 fi
 
-install_steam()
-{
-	mkdir -p $INSTALL_USER_HOME/hlds && cd $_
-
-	juju-log "Grabbing the hlds tool"
-	wget "http://storefront.steampowered.com/download/hldsupdatetool.bin"
-
-	if [ "$?" -ne 0 ]; then
-		juju-log "Unable to download the HLDS Update Tool"
-		exit 2
-	fi
-
-	CHECK_HLDS_SUM=`sha1sum hldsupdatetool.bin | awk '{ print $1 }'`
-
-	if [ "$CHECK_HLDS_SUM" -ne "$HLDS_SUM" ]; then
-		rm -f *.bin
-		juju-log "HLDS Update Tool didn't pass the SHA1SUM check!"
-		exit 5
-	fi
-
-	juju-log "Running HLDS Update Tool to get access to steam!"
-	chmod +x hldsupdatetool.bin
-	yes "yes" | ./hldsupdatetool.bin
-
-	mkdir -p $INSTALL_USER_HOME/www/replays
-}
-
 cp -f $CHARM_DIR/opt/$GAME-apache /etc/apache2/conf.d/
-
 chown -R steam.steam $INSTALL_USER_HOME
 
 a2dissite default

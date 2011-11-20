@@ -1,0 +1,66 @@
+#!/bin/bash
+
+install_steam()
+{
+	mkdir -p $INSTALL_USER_HOME/hlds && cd $_
+
+	juju-log "Grabbing the hlds tool"
+	wget "http://storefront.steampowered.com/download/hldsupdatetool.bin"
+
+	if [ "$?" -ne 0 ]; then
+		juju-log "Unable to download the HLDS Update Tool"
+		exit 2
+	fi
+
+	CHECK_HLDS_SUM=`sha1sum hldsupdatetool.bin | awk '{ print $1 }'`
+
+	if [ "$CHECK_HLDS_SUM" -ne "$HLDS_SUM" ]; then
+		rm -f *.bin
+		juju-log "HLDS Update Tool didn't pass the SHA1SUM check!"
+		exit 5
+	fi
+
+	juju-log "Running HLDS Update Tool to get access to steam!"
+	chmod +x hldsupdatetool.bin
+	yes "yes" | ./hldsupdatetool.bin
+
+	mkdir -p $INSTALL_USER_HOME/www/replays
+}
+
+install_game()
+{
+	juju-log "Installing $GAME"
+	cd $INSTALL_USER_HOME/hlds/
+	mkdir -p $INSTALL_USER_HOME/hlds/server
+
+	GAME_EXIT=9000
+	while [ "$GAME_EXIT" -ne 0 ]; do
+		./steam -command update -game $GAME -dir server
+		GAME_EXIT=$?
+	done
+
+	#Run any per-game installation steps, if required.
+	if [ `type -t install_$GAME` -eq "function" ]; then
+		install_$GAME
+	fi
+}
+
+update_configuration()
+{
+	cd "$CHARM_DIR"
+
+	for CONFIG_NAME in `grep -ri "STEAM_" opt/server.cfg | awk '{ print $2}'`; do
+		JUJU_CFG_NAME=${CONFIG_NAME#STEAM_}
+		JUJU_CFG_VALUE=`config-get ${JUJU_CFG_NAME,,*}`
+		sed -i "s/${CONFIG_NAME}/${JUJU_CFG_VALUE}/" $INSTALL_USER_HOME/hlds/server/$GAME_CFG_DIR/server.cfg
+	done
+
+	if [ ! "$GAME_USES_APACHE" ]; then
+		service apache stop
+		close-port 80
+	else
+		service apache start
+		open-port 80
+	fi
+}
+

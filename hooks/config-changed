@@ -4,36 +4,6 @@ set -ux
 
 source "env/common"
 
-install_game() {
-	juju-log "Installing $GAME"
-	cd $INSTALL_USER_HOME/hlds/
-	mkdir -p $INSTALL_USER_HOME/hlds/server
-
-	GAME_EXIT=9000
-	while [ "$GAME_EXIT" -ne 0 ]; do
-		./steam -command update -game $GAME -dir server
-		GAME_EXIT=$?
-	done
-}
-
-update_configuration() {
-	cd "$CHARM_DIR"
-
-	for CONFIG_NAME in `grep -ri "STEAM_" opt/server.cfg | awk '{ print $2}'`; do
-		JUJU_CFG_NAME=${CONFIG_NAME#STEAM_}
-		JUJU_CFG_VALUE=`config-get ${JUJU_CFG_NAME,,*}`
-		sed -i "s/${CONFIG_NAME}/${JUJU_CFG_VALUE}/" $INSTALL_USER_HOME/hlds/server/$GAME_CFG_DIR/server.cfg
-	done
-
-	if [ ! "$GAME_USES_APACHE" ]; then
-		service apache stop
-		close-port 80
-	else
-		service apache start
-		open-port 80
-	fi
-}
-
 juju-log "Ensure Steam is up-to-date"
 STEAM_EXIT=9000
 while [ "$STEAM_EXIT" -ne 0 ]; do

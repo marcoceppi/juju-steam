@@ -11,3 +11,5 @@ if [ -e "env/$GAME" ]; then
 else
 	source "env/default"
 fi
+
+source "env/funcs"
