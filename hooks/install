@@ -8,7 +8,7 @@ source "env/common"
 #  of a verified working hldsupdatetool.bin
 HLDS_SUM="3b8e0fcdd7375511f88556c3f8b698a28c93110f"
 
-juju-log "Installing the Steam Game Server $GAME"
+juju-log "Installing Apache"
 apt-get install -y apache2
 
 EGREP_PARAMS="^${INSTALL_USER}"

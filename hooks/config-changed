@@ -39,6 +39,14 @@ update_configuration() {
 		JUJU_CFG_VALUE=`config-get ${JUJU_CFG_NAME,,*}`
 		sed -i "s/${CONFIG_NAME}/${JUJU_CFG_VALUE}/" $INSTALL_USER_HOME/hlds/server/$GAME_CFG_DIR/server.cfg
 	done
+
+	if [ ! "$GAME_USES_APACHE" ]; then
+		service apache stop
+		close-port 80
+	else
+		service apache start
+		open-port 80
+	fi
 }
 
 if [ ! -f "$INSTALL_USER_HOME/hlds/server/$GAME_BINARY" ]; then
