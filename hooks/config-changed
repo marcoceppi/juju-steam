@@ -4,26 +4,11 @@ set -ux
 
 source "env/common"
 
-LOCAL_CFG_FILE="/home/$INSTALL_USER/hlds/server/$GAME_CFG_DIR/server.cfg"
-
-if [ -e "$LOCAL_CFG_FILE" ]; then
-	juju-log "Backing up configuration file."
-	rm -f $INSTALL_USER_HOME/hlds/server/$GAME_CFG_DIR/sever.cfg.bak
-	mv $INSTALL_USER_HOME/hlds/server/$GAME_CFG_DIR/server.cfg $INSTALL_USER_HOME/hlds/sever/$GAME_CFG_DIR/server.cfg.bak
-fi
-
-STEAM_EXIT=9000
-CHARM_DIR=`pwd`
-while [ "$STEAM_EXIT" -ne 0 ]; do
-	cd $INSTALL_USER_HOME/hlds/
-	./steam
-	STEAM_EXIT=$?
-done
-
 install_game() {
+	juju-log "Installing $GAME"
 	cd $INSTALL_USER_HOME/hlds/
 	mkdir -p $INSTALL_USER_HOME/hlds/server
-	
+
 	GAME_EXIT=9000
 	while [ "$GAME_EXIT" -ne 0 ]; do
 		./steam -command update -game $GAME -dir server
@@ -33,7 +18,7 @@ install_game() {
 
 update_configuration() {
 	cd "$CHARM_DIR"
-	
+
 	for CONFIG_NAME in `grep -ri "STEAM_" opt/server.cfg | awk '{ print $2}'`; do
 		JUJU_CFG_NAME=${CONFIG_NAME#STEAM_}
 		JUJU_CFG_VALUE=`config-get ${JUJU_CFG_NAME,,*}`
@@ -49,7 +34,20 @@ update_configuration() {
 	fi
 }
 
-if [ ! -f "$INSTALL_USER_HOME/hlds/server/$GAME_BINARY" ]; then
+juju-log "Ensure Steam is up-to-date"
+STEAM_EXIT=9000
+while [ "$STEAM_EXIT" -ne 0 ]; do
+	cd $INSTALL_USER_HOME/hlds/
+	./steam
+	STEAM_EXIT=$?
+done
+
+juju-log "Checking if game is installed"
+if [ -e "$LOCAL_CFG_FILE" ]; then
+	juju-log "Backing up configuration file."
+	rm -f $INSTALL_USER_HOME/hlds/server/$GAME_CFG_DIR/sever.cfg.bak
+	mv $INSTALL_USER_HOME/hlds/server/$GAME_CFG_DIR/server.cfg $INSTALL_USER_HOME/hlds/sever/$GAME_CFG_DIR/server.cfg.bak
+else
 	install_game
 fi
 

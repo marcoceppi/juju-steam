@@ -4,6 +4,7 @@ GAME_NAME="dods"
 GAME_DIR="orangebox/dods"
 GAME_CFG_DIR="$GAME_DIR/cfg"
 GAME_BINARY="orangebox/srcds_linux"
+LOCAL_CFG_FILE="/home/$INSTALL_USER/hlds/server/$GAME_CFG_DIR/server.cfg"
 
 open-port 27015
 open-port 27016
