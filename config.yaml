@@ -1,6 +1,6 @@
 options:
   game:
-    default: tf
+    default: tf2
     type: string
     description: Steam game server to install
   system_user:
@@ -13,23 +13,23 @@ options:
     description: Servers game name
   visible_maxplayers:
     default: 24
-    type: string
+    type: int
     description: How many players the server advertises
   maxplayers:
     default: 24
-    type: string
+    type: int
     description: Maximium players available on the server
   maxrounds:
     default: 5
-    type: string
+    type: int
     description: Maximum rounds per map
   pure:
     default: 2
-    type: string
+    type: int
     description: Control access to content
   is_lan:
     default: 0
-    type: string
+    type: int
     description: Is a lan or internet game
   server_email:
     default: steam@localhost
@@ -45,37 +45,41 @@ options:
     description: Password for Remote Console
   log_to_console:
     default: 0
-    type: string
+    type: int
     description: Echo log ot console
   max_fps:
     default: 300
-    type: string
+    type: int
     description: Maximum Frames Per Second
   allow_upload:
     default: 0
-    type: string
+    type: int
     description: Allow upload to server
   allow_download:
     default: 1
-    type: string
+    type: int
     description: Allow downloads from server
   auto_team_balance:
     default: 1
-    type: string
+    type: int
     description: Automatically balance the teams
   map_timelimit:
     default: 30
-    type: string
+    type: int
     description: Timelimit in minutes
   idle_play_action:
     default: 1
-    type: string
+    type: int
     description: 1 is to spectate 2 is to kick
   enable_voice:
     default: 1
-    type: string
+    type: int
     description: Allow voice communication
   alltalk:
     default: 1
-    type: string
+    type: int
     description: Allow chat between both teams
+  friendly_fire:
+    default: 1
+    type: int
+    description: Enable/Disable friendly fire, where available
